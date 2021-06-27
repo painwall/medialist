@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+	<h1>
+			Создание аккаунта
+		</h1>
+		<h2>
+			{% if error %}
+				{{error}}
+			{% endif%}
+		</h2>
+		<form action='.' method="post">
+			{% csrf_token %}
+			{{ registration_form.as_p }}
+			<p><input type="submit" value="Создать мой аккаунт"></p>
+		</form>
+</body>
