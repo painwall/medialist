@@ -17,7 +17,7 @@ class RegistrationView(View):
         if registration_form.is_valid():
             result = self.create_user(registration_form.cleaned_data)
             if result['result']:
-                return redirect('/registration/done')
+                return redirect('registration_done')
             else:
                 return render(request, RegistrationView.template_name, {'registration_form': registration_form, 'error': result['data']})
 
