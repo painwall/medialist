@@ -23,13 +23,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
-    path('', RedirectView.as_view(url='/account/', permanent=True))
+    path('home/', include('home.urls')),
+    path('', RedirectView.as_view(url='/home/', permanent=True))
 ]
-
-
-
-
-
 
 
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
