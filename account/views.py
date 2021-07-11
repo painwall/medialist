@@ -6,8 +6,10 @@ from .forms import *
 from .exceptions import RegistrationError
 from django.contrib import auth
 
+
 class RegistrationView(View):
     template_name = 'registration.html'
+
     def get(self, request, error=None):
         registration_form = UserRegistrationForm()
         return render(request, RegistrationView.template_name, {'registration_form': registration_form, 'error': error})
@@ -19,7 +21,8 @@ class RegistrationView(View):
             if result['result']:
                 return redirect('registration_done')
             else:
-                return render(request, RegistrationView.template_name, {'registration_form': registration_form, 'error': result['data']})
+                return render(request, RegistrationView.template_name,
+                              {'registration_form': registration_form, 'error': result['data']})
 
     def create_user(self, data):
 
@@ -32,7 +35,6 @@ class RegistrationView(View):
 
             if any(user.email == data['email'] for user in all_users):
                 raise RegistrationError(f'Пользователь с такой почтой ({data["email"]}) уже существует')
-
 
             if data['password0'] != data['password1']:
                 raise RegistrationError(f'Введенные пароли разные')
@@ -47,12 +49,12 @@ class RegistrationView(View):
         except RegistrationError as error:
             return {'result': False, 'data': error.message}
 
-
-
         return {'result': True, 'data': data}
+
 
 class RegistrationDoneView(View):
     template_name = 'registration_done.html'
+
     def get(self, request):
         return render(request, RegistrationDoneView.template_name)
 
@@ -77,4 +79,10 @@ class LoginView(View):
             auth.login(request, user)
             return redirect('home/')
         else:
-            return render(request, LoginView.template_name, {'login_form':login_form, 'error': 'Неправильное имя пользователя, почта или пароль'})
+            return render(request, LoginView.template_name,
+                          {'login_form': login_form, 'error': 'Неправильное имя пользователя, почта или пароль'})
+
+
+def logout(request):
+    auth.logout(request)
+    return redirect('home/')
