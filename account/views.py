@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.views.generic import View
-from .forms import UserRegistrationForm
+from .forms import *
 from .exceptions import RegistrationError
-
+from django.contrib import auth
 
 class RegistrationView(View):
     template_name = 'registration.html'
@@ -55,3 +55,26 @@ class RegistrationDoneView(View):
     template_name = 'registration_done.html'
     def get(self, request):
         return render(request, RegistrationDoneView.template_name)
+
+
+class LoginView(View):
+    template_name = 'login.html'
+
+    def get(self, request):
+        login_form = LoginForm()
+        return render(request, LoginView.template_name, {'login_form': login_form})
+
+    def post(self, request):
+        login_form = LoginForm(request.POST)
+        data = login_form.data
+
+        if '@' in data['username_or_email']:
+            user = auth.authenticate(email=data['username_or_email'], password=data['password'])
+        else:
+            user = auth.authenticate(username=data['username_or_email'], password=data['password'])
+
+        if user and user.is_active:
+            auth.login(request, user)
+            return redirect('home/')
+        else:
+            return render(request, LoginView.template_name, {'login_form':login_form, 'error': 'Неправильное имя пользователя, почта или пароль'})
